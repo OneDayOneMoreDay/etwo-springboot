@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxnu.mapper.OrderMapper">
+
+    <!-- 配置 查询结果的列名和实体类的属性名的对应关系 -->
+    <resultMap id="orderMap" type="Order">
+        <!-- 主键字段的对应 -->
+        <id property="orderId" column="order_id"></id>
+        <!--非主键字段的对应-->
+        <result property="orderShopId" column="order_shop_id"></result>
+        <result property="deskId" column="desk_id"></result>
+        <result property="orderStatus" column="order_status"></result>
+        <result property="orderDateBuy" column="order_date_buy"></result>
+        <result property="orderDatePay" column="order_date_pay"></result>
+        <result property="orderTotalPrice" column="order_total_price"></result>
+        <collection property="items" ofType="Item" column="order_id"
+        select="com.jxnu.mapper.ItemMapper.findItemByItemOrderId"></collection>
+
+    </resultMap>
+
+    <!--根据条件查询订单，延迟加载-->
+    <select id="findOrderByCondition" parameterType="order" resultMap="orderMap">
+        select * from orders
+        <where>
+            <if test="orderShopId != null">
+                and order_shop_id = #{orderShopId}
+            </if>
+            <if test="orderId != null">
+                and order_id = #{orderId}
+            </if>
+            <if test="deskId != null">
+                and desk_id = #{deskId}
+            </if>
+            <if test="orderStatus != null">
+                and order_status = #{orderStatus}
+            </if>
+        </where>
+    </select>
+
+    <!--插入一个订单-->
+    <insert id="insertOrder" parameterType="order">
+        <selectKey keyProperty="orderId" keyColumn="order_id" resultType="integer" order="AFTER">
+            select last_insert_id();
+        </selectKey>
+        insert into orders(order_shop_id,desk_id,order_status,order_date_buy,order_total_price)
+        values (#{orderShopId},#{deskId},#{orderStatus},#{orderDateBuy},#{orderTotalPrice})
+    </insert>
+
+    <!--修改一个订单（修改付款时间（将时间从null修改到具体值）和订单状态）-->
+    <update id="updateOrder" parameterType="order">
+        update orders set order_date_pay = #{orderDatePay} , order_status=#{orderStatus}
+        where order_id = #{orderId}
+    </update>
+
+    <!--修改一个订单（修改订单总价）-->
+    <update id="updateOrderTotalPrice">
+        update orders set order_total_price = #{orderTotalPrice}
+        where order_id = #{orderId}
+    </update>
+</mapper>

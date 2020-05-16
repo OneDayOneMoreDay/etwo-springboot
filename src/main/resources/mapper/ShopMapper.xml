@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxnu.mapper.ShopMapper">
+
+    <!-- 配置 查询结果的列名和实体类的属性名的对应关系 -->
+    <resultMap id="shopMap" type="Shop">
+        <!-- 主键字段的对应 -->
+        <id property="shopId" column="shop_id"></id>
+        <!--非主键字段的对应-->
+        <result property="shopName" column="shop_name"></result>
+        <result property="shopAddress" column="shop_address"></result>
+        <result property="shopImgPath" column="shop_img_path"></result>
+        <result property="shopNotice" column="shop_notice"></result>
+        <result property="shopStatus" column="shop_status"></result>
+        <result property="shopEmail" column="shop_email"></result>
+        <result property="shopPassword" column="shop_password"></result>
+    </resultMap>
+
+    <!--抽取重复的sql代码-->
+    <sql id="defaultShop">
+        select * from shop
+    </sql>
+
+    <!--根据传入参数条件查询店铺，延迟加载-->
+    <select id="findShopByCondition" parameterType="shop" resultMap="shopMap">
+        <include refid="defaultShop"/>
+        <where>
+            <if test="shopId != null">
+                and shop_id = #{shopId}
+            </if>
+            <if test="shopEmail != null">
+                and shop_email = #{shopEmail}
+            </if>
+            <if test="shopPassword != null">
+                and shop_password = #{shopPassword}
+            </if>
+        </where>
+    </select>
+
+    <!--插入一家店铺-->
+    <insert id="insertShop" parameterType="Shop">
+        <selectKey keyProperty="shopId" keyColumn="shop_id" resultType="Integer" order="AFTER">
+            select last_insert_id();
+        </selectKey>
+        INSERT INTO shop(shop_name,shop_address,shop_img_path,shop_notice,shop_status,shop_email,shop_password)
+        VALUE(#{shopName},#{shopAddress},#{shopImgPath},#{shopNotice},#{shopStatus},#{shopEmail},#{shopPassword})
+    </insert>
+
+    <!--修改一家店铺信息-->
+    <update id="updateShop" parameterType="shop">
+        update shop set shop_name=#{shopName},shop_address=#{shopAddress},shop_notice=#{shopNotice}
+        where shop_id = #{shopId}
+    </update>
+
+    <!--修改店铺密码-->
+    <update id="updateShopPassword" parameterType="shop">
+        update shop set shop_password = #{shopPassword} where shop_id = #{shopId}
+    </update>
+</mapper>

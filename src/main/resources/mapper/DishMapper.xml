@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxnu.mapper.DishMapper">
+
+    <!-- 配置 查询结果的列名和实体类的属性名的对应关系 -->
+    <resultMap id="dishMap" type="Dish">
+        <!-- 主键字段的对应 -->
+        <id property="dishId" column="dish_id"></id>
+        <!--非主键字段的对应-->
+        <result property="dishTypeId" column="dish_type_id"></result>
+        <result property="dishName" column="dish_name"></result>
+        <result property="dishImgPath" column="dish_img_path"></result>
+        <result property="dishPrice" column="dish_price"></result>
+        <result property="dishNumber" column="dish_number"></result>
+        <result property="dishStatus" column="dish_status"></result>
+    </resultMap>
+
+    <!--根据菜品类型（dishTypeID）查询正常销售的菜品信息-->
+    <select id="findDishByDishTypeId" resultMap="dishMap" parameterType="Integer">
+        SELECT * FROM dish WHERE dish_type_id = #{type_id} and dish_status = 1
+    </select>
+
+    <!--添加一个菜品-->
+    <insert id="insertDish" parameterType="dish">
+        insert into dish(dish_type_id,dish_name,dish_img_path,dish_price,dish_number,dish_status)
+        values (#{dishTypeId},#{dishName},#{dishImgPath},#{dishPrice},#{dishNumber},#{dishStatus})
+    </insert>
+
+    <!--根据菜品id来删除菜品-->
+    <update id="deleteDish" parameterType="Integer">
+        update dish set dish_status = 0 where dish_id = #{dishId}
+    </update>
+
+    <!--修改一个菜品-->
+    <update id="updateDish" parameterType="dish">
+        update dish set dish_type_id=#{dishTypeId},dish_name=#{dishName},
+        dish_price=#{dishPrice},dish_number=#{dishNumber} where dish_id=#{dishId}
+    </update>
+
+    <!--根据菜品id查询菜品信息-->
+    <select id="findDishByDishId" resultMap="dishMap" parameterType="Integer">
+        SELECT * FROM dish WHERE dish_id = #{dishId} and dish_status = 1
+    </select>
+</mapper>

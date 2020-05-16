@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxnu.mapper.TypeMapper">
+
+    <!-- 配置 查询结果的列名和实体类的属性名的对应关系 -->
+    <resultMap id="typeMap" type="Type">
+        <!-- 主键字段的对应 -->
+        <id property="typeId" column="type_id"></id>
+        <!--非主键字段的对应-->
+        <result property="typeShopId" column="type_shop_id"></result>
+        <result property="typeName" column="type_name"></result>
+        <!--延迟加载具体的菜品信息-->
+        <collection property="dishes" ofType="Dish" column="type_id"
+                    select="com.jxnu.mapper.DishMapper.findDishByDishTypeId"/>
+    </resultMap>
+
+    <!--根据菜品类型（dishTypeID）查询菜品信息-->
+    <select id="findTypeByShopId" resultMap="typeMap" parameterType="Integer">
+        SELECT * FROM type WHERE type_shop_id = #{shopId}
+    </select>
+
+    <!--添加一条菜品分类-->
+    <insert id="insertType" parameterType="type">
+        <selectKey keyProperty="typeId" keyColumn="type_id" resultType="integer" order="AFTER">
+            select last_insert_id();
+        </selectKey>
+        insert into type(type_name,type_shop_id) values (#{typeName},#{typeShopId})
+    </insert>
+
+    <!--修改一条菜品分类-->
+    <update id="updateType" parameterType="type">
+        update type set type_name = #{typeName} where type_id = #{typeId}
+    </update>
+
+    <!--删除一条菜品分类-->
+    <delete id="deleteType" parameterType="integer">
+        delete from type where type_id = #{typeId}
+    </delete>
+</mapper>

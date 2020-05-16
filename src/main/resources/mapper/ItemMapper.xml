@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jxnu.mapper.ItemMapper">
+
+    <!-- 配置 查询结果的列名和实体类的属性名的对应关系 -->
+    <resultMap id="itemMap" type="item">
+        <!-- 主键字段的对应 -->
+        <id property="itemOrderId" column="item_order_id"></id>
+        <result property="itemDishId" column="item_dish_id"></result>
+        <!--非主键字段的对应-->
+        <result property="itemNumber" column="item_number"></result>
+        <association property="dish" javaType="Dish" column="item_dish_id"
+                     select="com.jxnu.mapper.DishMapper.findDishByDishId"/>
+    </resultMap>
+
+    <!--根据订单id查询订单明细-->
+    <select id="findItemByItemOrderId" parameterType="Integer" resultMap="itemMap">
+        select * from item where item_order_id = #{itemOrderId}
+    </select>
+
+    <!--插入一个订单明细-->
+    <insert id="insertItem" parameterType="item">
+        insert into item(item_order_id,item_dish_id,item_number)
+        values (#{itemOrderId},#{itemDishId},#{itemNumber})
+    </insert>
+
+    <!--修改一个订单明细(修改数量)-->
+    <insert id="updateItemNumber">
+        update item
+        set item_number = #{itemNumber}
+        where item_order_id = #{itemOrderId}
+    </insert>
+</mapper>
