@@ -293,6 +293,7 @@ public class CustomerController {
                 item1.setItemOrderId(item.getItemOrderId());
                 item1.setItemDishId(item.getItemDishId());
                 item1.setItemNumber(item.getItemNumber());
+                item1.setItemWaitNumber(item.getItemWaitNumber());
                 item1.setDish(item.getDish());
                 order1.getItems().add(item1);
             }

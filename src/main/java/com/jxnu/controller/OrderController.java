@@ -65,6 +65,7 @@ public class OrderController {
                 item1.setItemDishId(item.getItemDishId());
                 item1.setItemNumber(item.getItemNumber());
                 item1.setDish(item.getDish());
+                item1.setItemWaitNumber(item.getItemWaitNumber());
                 order2.getItems().add(item1);
             }
             order2.setOrderId(order1.getOrderId());
@@ -117,6 +118,7 @@ public class OrderController {
                 item1.setItemDishId(item.getItemDishId());
                 item1.setItemNumber(item.getItemNumber());
                 item1.setDish(item.getDish());
+                item1.setItemWaitNumber(item.getItemWaitNumber());
                 order2.getItems().add(item1);
             }
             order2.setOrderId(order1.getOrderId());

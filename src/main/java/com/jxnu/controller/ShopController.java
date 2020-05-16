@@ -55,7 +55,7 @@ public class ShopController {
     private String shopImgPath;
     /**
      * 登录
-     * 开发get方法测试
+     * 开放get方法测试
      *
      * @param req      HttpServletRequest
      * @param resp     HttpServletResponse,为了设置cookie

@@ -72,9 +72,9 @@ public class OrderServiceImpl implements OrderService {
         order1.setDeskId(deskId.byteValue());
         order1.setOrderStatus((byte)0);
         List<Order> orderByCondition = orderMapper.findOrderByCondition(order1);
-        //3.1不存在未结账订单
+        //3.1该店铺该桌位不存在未结账订单
         if (orderByCondition.size()==0){
-            System.out.println(11111111);
+            //System.out.println(11111111);
             //4.插入订单
             //4.1 构建order对象
             Order order = new Order();
@@ -97,11 +97,12 @@ public class OrderServiceImpl implements OrderService {
                 item.setItemOrderId(orderId);
                 item.setItemDishId(integer);
                 item.setItemNumber(dishMap.get(integer));
+                item.setItemWaitNumber(dishMap.get(integer));
                 itemMapper.insertItem(item);
             }
         }else{
-            System.out.println(222222222);
-            //3.2存在未结账订单
+            //System.out.println(222222222);
+            //3.2该店铺该桌位存在还未结账订单
             //4.更新订单总价
             orderMapper.updateOrderTotalPrice(orderByCondition.get(0).getOrderTotalPrice()+totalPrice,
                     orderByCondition.get(0).getOrderId());
@@ -109,17 +110,20 @@ public class OrderServiceImpl implements OrderService {
             //5.1若原来已经点了的菜，则修改菜品数量
             for (Item item1 : orderByCondition.get(0).getItems()) {
                 if (dishIdSet.contains(item1.getItemDishId())){
-                    itemMapper.updateItemNumber(item1.getItemNumber()+dishMap.get(item1.getItemDishId()),
-                            item1.getItemOrderId());
+                    itemMapper.updateItem(item1.getItemOrderId(),
+                            item1.getItemDishId(),
+                            dishMap.get(item1.getItemDishId()),
+                            dishMap.get(item1.getItemDishId()));
                     dishIdSet.remove(item1.getItemDishId());
                 }
             }
-            //5.2若原来没有点了的菜，则增加一条订单明细
+            //5.2若原来没有点这个的菜，则增加一条订单明细
             Item item = new Item();
             for (Integer integer : dishIdSet) {
                 item.setItemOrderId(orderByCondition.get(0).getOrderId());
                 item.setItemDishId(integer);
                 item.setItemNumber(dishMap.get(integer));
+                item.setItemWaitNumber(dishMap.get(integer));
                 itemMapper.insertItem(item);
             }
         }

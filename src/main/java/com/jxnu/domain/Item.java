@@ -15,8 +15,10 @@ public class Item {
     private Integer itemOrderId;
     //菜品编号
     private Integer itemDishId;
-    //品数量
+    //菜品品数量
     private Integer itemNumber;
+    //该菜品待上的数量
+    private Integer itemWaitNumber;
 
     //订单明细所有的菜品
     private Dish dish;

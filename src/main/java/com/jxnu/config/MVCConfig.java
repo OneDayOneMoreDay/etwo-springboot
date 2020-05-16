@@ -46,6 +46,7 @@ public class MVCConfig implements WebMvcConfigurer {
                         "/**/*.txt",
                         "/Kaptcha",
                         "static/**",
+                        "/waiter/login",
                         "/shop/login",
                         "/shop/reg",
                         "/shop/loginOut",

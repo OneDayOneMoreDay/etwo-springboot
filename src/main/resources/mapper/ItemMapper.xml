@@ -11,6 +11,7 @@
         <result property="itemDishId" column="item_dish_id"></result>
         <!--非主键字段的对应-->
         <result property="itemNumber" column="item_number"></result>
+        <result property="itemWaitNumber" column="item_wait_number"></result>
         <association property="dish" javaType="Dish" column="item_dish_id"
                      select="com.jxnu.mapper.DishMapper.findDishByDishId"/>
     </resultMap>
@@ -22,14 +23,41 @@
 
     <!--插入一个订单明细-->
     <insert id="insertItem" parameterType="item">
-        insert into item(item_order_id,item_dish_id,item_number)
-        values (#{itemOrderId},#{itemDishId},#{itemNumber})
+        insert into item(item_order_id,item_dish_id,item_number,item_wait_number)
+        values (#{itemOrderId},#{itemDishId},#{itemNumber},#{itemWaitNumber})
     </insert>
 
-    <!--修改一个订单明细(修改数量)-->
-    <insert id="updateItemNumber">
+    <!--修改一个订单明细(修改菜数量和该菜品待上的数量)-->
+    <insert id="updateItem">
         update item
-        set item_number = #{itemNumber}
-        where item_order_id = #{itemOrderId}
+        set item_number = #{itemIncrNumber} + item_number,
+        item_wait_number = #{itemIncrWaitNumber} + item_wait_number
+        where item_order_id = #{itemOrderId} and item_dish_id = #{itemDishId}
     </insert>
+
+    <!--使菜品待上数量加一或减一-->
+    <update id="updateItemWaitNumber">
+        <if test="number == 1">
+            update item
+            set item.item_wait_number = item.item_wait_number + #{number}
+            where item.item_number > item.item_wait_number
+            and item.item_dish_id=#{dishId} and item.item_order_id = (
+                SELECT distinct orders.order_id
+                from orders
+                where orders.order_shop_id = #{shopId} and orders.desk_id = #{deskId}
+                and orders.order_status=0
+            )
+        </if>
+        <if test="number == -1">
+            update item
+            set item.item_wait_number = item.item_wait_number + #{number}
+            where item.item_wait_number > 0
+            and item.item_dish_id=#{dishId} and item.item_order_id = (
+                SELECT distinct orders.order_id
+                from orders
+                where orders.order_shop_id = #{shopId} and orders.desk_id = #{deskId}
+                and orders.order_status=0
+            )
+        </if>
+    </update>
 </mapper>

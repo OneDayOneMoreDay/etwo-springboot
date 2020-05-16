@@ -15,8 +15,8 @@ server:
 #日志配置
 logging:
   level:
+    com.jxnu.mapper: debug
     root: info
-    org.mybatis: debug
   file: /mylog/etwo-springboot.log
 
 spring:
