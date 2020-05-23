@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -129,15 +130,16 @@ public class CustomerController {
 
     /**
      * 点菜（点的菜还未下订单）
+     *
      * @param shopId
      * @param deskId
-     * @param headSculpturePath
+     * @param headSculpturePath 微信头像路径
      * @param str_dishMap
      * @return
      */
     @RequestMapping(path = "/prePlaceOrder", params = {"shopId", "deskId", "headSculpturePath"})
     public Map<String, Object> prePlaceOrder(Integer shopId, Integer deskId, String headSculpturePath,
-                                          @RequestParam Map<String, String> str_dishMap){
+                                             @RequestParam Map<String, String> str_dishMap) {
         logger.info("shopId=" + shopId);
         logger.info("deskId=" + deskId);
         logger.info("headSculpturePath=" + headSculpturePath);
@@ -146,25 +148,25 @@ public class CustomerController {
         Map<String, Object> map = new HashMap<String, Object>();
 
         //1.将该顾客加入redis缓存点餐人集合中
-        stringRedisTemplate.opsForZSet().add("orderPerson"+":"+shopId + ":" + deskId, headSculpturePath, System.currentTimeMillis());
-        stringRedisTemplate.expire("orderPerson"+":"+shopId + ":" + deskId,6,TimeUnit.HOURS);
+        stringRedisTemplate.opsForZSet().add("orderPerson" + ":" + shopId + ":" + deskId, headSculpturePath, System.currentTimeMillis());
+        stringRedisTemplate.expire("orderPerson" + ":" + shopId + ":" + deskId, 6, TimeUnit.HOURS);
 
         //2.获取当前点餐人数并过滤掉1分钟内没有发送心跳的顾客（1分钟内没有发送心跳代表该顾客已经没有在点餐了）
         Set<ZSetOperations.TypedTuple<String>> orderPersonOld = stringRedisTemplate.opsForZSet()
-                .rangeWithScores("orderPerson"+":"+shopId + ":" + deskId, 0, -1);
+                .rangeWithScores("orderPerson" + ":" + shopId + ":" + deskId, 0, -1);
         Set<String> orderPersonNew = new HashSet<>();
         orderPersonOld.stream().filter(s ->
-                (System.currentTimeMillis() - s.getScore()) < 6000).forEach(s -> orderPersonNew.add(s.getValue()));
+                (System.currentTimeMillis() - s.getScore()) < 60000).forEach(s -> orderPersonNew.add(s.getValue()));
 
-        logger.info("orderPersonOld="+orderPersonOld);
-        logger.info("orderPersonNew="+orderPersonNew);
+        logger.info("orderPersonOld=" + orderPersonOld);
+        logger.info("orderPersonNew=" + orderPersonNew);
 
         //3.判断该顾客是否是第一次点餐
         if (str_dishMap.size() == 3) {
             map.put("success", true);
             map.put("msg", "加入点菜成功");
-            map.put("orderPerson",orderPersonNew);
-            map.put("orderPersonSize",orderPersonNew.size());
+            map.put("orderPerson", orderPersonNew);
+            map.put("orderPersonSize", orderPersonNew.size());
             return map;
         }
 
@@ -183,23 +185,23 @@ public class CustomerController {
 
         //6.将点的菜（还未下单的）加入到redis缓存中
         for (Integer dishId : dishMap.keySet()) {
-            stringRedisTemplate.opsForHash().increment("preOrderDish"+":"+shopId + ":" + deskId,""+dishId,dishMap.get(dishId));
+            stringRedisTemplate.opsForHash().increment("preOrderDish" + ":" + shopId + ":" + deskId, "" + dishId, dishMap.get(dishId));
         }
 
         //7.返回结果
         map.put("success", true);
         map.put("msg", "点菜成功");
-        map.put("orderPerson",orderPersonNew);
-        map.put("orderPersonSize",orderPersonNew.size());
+        map.put("orderPerson", orderPersonNew);
+        map.put("orderPersonSize", orderPersonNew.size());
         return map;
     }
 
     /**
      * 下订单（可多次下订单）
      *
-     * @param shopId            该订单的所属店铺id
-     * @param deskId            该订单的桌号
-     *                          直接用map做参数map就会包含key为shopId、deskId的键值对，不过会在方法去除掉
+     * @param shopId 该订单的所属店铺id
+     * @param deskId 该订单的桌号
+     *               直接用map做参数map就会包含key为shopId、deskId的键值对，不过会在方法去除掉
      * @return
      */
     @RequestMapping(path = "/placeOrder", params = {"shopId", "deskId"})
@@ -210,14 +212,14 @@ public class CustomerController {
         Map<String, Object> map = new HashMap<String, Object>();
 
         //1.从缓存中获取要下订单的菜品
-        Map<Integer,Integer> dishMap = new HashMap<>();
+        Map<Integer, Integer> dishMap = new HashMap<>();
         Map<Object, Object> objDishMap = stringRedisTemplate.opsForHash().entries("preOrderDish" + ":" + shopId + ":" + deskId);
-        logger.info("objDishMap="+objDishMap);
+        logger.info("objDishMap=" + objDishMap);
         for (Map.Entry<Object, Object> obj : objDishMap.entrySet()) {
             dishMap.put(Integer.parseInt(obj.getKey().toString()), Integer.parseInt(obj.getValue().toString()));
         }
-        logger.info("dishMap="+dishMap);
-        if (dishMap.size()==0){
+        logger.info("dishMap=" + dishMap);
+        if (dishMap.size() == 0) {
             map.put("success", false);
             map.put("msg", "没有菜品可以下单");
             return map;
@@ -302,19 +304,53 @@ public class CustomerController {
         }
 
         //4.从缓存查询已点但还未下单的菜品
-        Map<Integer,Integer> dishMap = new HashMap<>();
+        Map<Integer, Integer> dishMap = new HashMap<>();
         Map<Object, Object> objDishMap = stringRedisTemplate.opsForHash().entries("preOrderDish" + ":" + shopId + ":" + deskId);
-        logger.info("objDishMap="+objDishMap);
+        logger.info("objDishMap=" + objDishMap);
         for (Map.Entry<Object, Object> obj : objDishMap.entrySet()) {
             dishMap.put(Integer.parseInt(obj.getKey().toString()), Integer.parseInt(obj.getValue().toString()));
         }
-        logger.info("dishMap="+dishMap);
+        logger.info("dishMap=" + dishMap);
 
-        Map<Object,Integer> dishInfoMap = new HashMap<>();
+        Map<Object, Integer> dishInfoMap = new HashMap<>();
         for (Map.Entry<Integer, Integer> entry : dishMap.entrySet()) {
-            dishInfoMap.put(dishService.findDishByDishId(entry.getKey()),entry.getValue());
+            dishInfoMap.put(dishService.findDishByDishId(entry.getKey()), entry.getValue());
         }
-        map.put("preOrder",dishInfoMap);
+        map.put("preOrder", dishInfoMap);
+
+        return map;
+    }
+
+
+    /**
+     * 催菜或呼叫服务员
+     * @param shopId
+     * @param deskId
+     * @param callOrUrge 该值为true时代表呼叫服务员，为false时代表催菜，默认为false
+     * @return
+     */
+    @GetMapping(path = "/callAndUrge", params = {"shopId", "deskId","callOrUrge"})
+    public Map<String, Object> callWaiterAndUrgeDishes(Integer shopId, Integer deskId,
+                                                       @RequestParam(defaultValue = "false") boolean callOrUrge) {
+        logger.info("shopId=" + shopId);
+        logger.info("deskId=" + deskId);
+        logger.info("callOrUrge=" + callOrUrge);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        if (callOrUrge) {
+            stringRedisTemplate.opsForZSet().add("callWaiter" + ":" + shopId, String.valueOf(deskId), System.currentTimeMillis());
+            stringRedisTemplate.expire("callWaiter" + ":" + shopId, 6, TimeUnit.HOURS);
+
+            map.put("success",true);
+            map.put("msg","呼叫服务员成功");
+        } else {
+            stringRedisTemplate.opsForZSet().add("urgeDishes" + ":" + shopId, String.valueOf(deskId), System.currentTimeMillis());
+            stringRedisTemplate.expire("urgeDishes" + ":" + shopId, 6, TimeUnit.HOURS);
+
+            map.put("success",true);
+            map.put("msg","催菜成功");
+        }
 
         return map;
     }

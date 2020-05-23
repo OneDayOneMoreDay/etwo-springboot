@@ -30,6 +30,9 @@ public class EtwoSpringbootApplicationTests {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate2;
+
     @Test
     public void contextLoads() throws SQLException {
 //        System.out.println(dataSource);
@@ -101,5 +104,51 @@ public class EtwoSpringbootApplicationTests {
     public void test7() throws SQLException, InterruptedException, JsonProcessingException {
         Map<Object, Object> entries = stringRedisTemplate.opsForHash().entries("preOrderDish:1000:66");
         System.out.println(entries);
+    }
+
+    @Test
+    public void test8() throws SQLException, InterruptedException, JsonProcessingException {
+        long s = System.currentTimeMillis();
+
+        stringRedisTemplate.opsForValue().set("test8-1","1");
+
+        long e = System.currentTimeMillis();
+        System.out.println("e-s="+(e-s));
+
+    }
+
+    @Test
+    public void test9() {
+        long s = System.currentTimeMillis();
+
+        System.out.println("stringRedisTemplate="+stringRedisTemplate);
+        System.out.println("stringRedisTemplate2="+stringRedisTemplate2);
+
+        long e = System.currentTimeMillis();
+        System.out.println("e-s="+(e-s));
+    }
+
+    @Test
+    public void test10() throws SQLException, InterruptedException, JsonProcessingException {
+        long s = System.currentTimeMillis();
+
+        for (int i = 1; i <= 10; i++) {
+
+                new Thread(()->{
+                    stringRedisTemplate.opsForValue().set("test10-"+System.currentTimeMillis(),System.currentTimeMillis()+"");
+                },String.valueOf(i)).start();
+
+        }
+
+        long e = System.currentTimeMillis();
+        System.out.println("e-s="+(e-s));
+    }
+
+    @Test
+    public void test11() throws SQLException, InterruptedException, JsonProcessingException {
+        Set<ZSetOperations.TypedTuple<String>> testSet = new HashSet<>();
+
+
+        stringRedisTemplate.opsForZSet().add("test11",testSet);
     }
 }

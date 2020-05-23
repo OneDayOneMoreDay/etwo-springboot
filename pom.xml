@@ -50,7 +50,27 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+            <!-- springboot2.x默认指定了lettuce客户端，若要使用jedis客户端，需排除-->
+            <!--<exclusions>-->
+                <!--<exclusion>-->
+                    <!--<artifactId>lettuce-core</artifactId>-->
+                    <!--<groupId>io.lettuce</groupId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
         </dependency>
+
+        <!-- spring2.x使用lettuce客户端集成redis使用连接池需要common-pool2包，使用jedis客户端不需要单独导入这个包 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.4.2</version>
+        </dependency>
+
+        <!--<dependency>-->
+            <!--<groupId>redis.clients</groupId>-->
+            <!--<artifactId>jedis</artifactId>-->
+            <!--<version>2.9.0</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -70,7 +90,6 @@
             <artifactId>druid</artifactId>
             <version>1.1.8</version>
         </dependency>
-
 
         <dependency>
             <groupId>com.github.penggle</groupId>
