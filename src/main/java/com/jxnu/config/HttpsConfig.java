@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * @date 2020/5/14 15:55
  */
-@Configuration
+//@Configuration
 public class HttpsConfig {
     @Bean
     TomcatServletWebServerFactory tomcatServletWebServerFactory() {

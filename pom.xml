@@ -36,6 +36,19 @@
             <version>2.1.2</version>
         </dependency>
 
+        <!--mail-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!--spring-boot-starter-mail依赖这个包-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-email</artifactId>
+            <version>1.5</version>
+        </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -52,10 +65,10 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
             <!-- springboot2.x默认指定了lettuce客户端，若要使用jedis客户端，需排除-->
             <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<artifactId>lettuce-core</artifactId>-->
-                    <!--<groupId>io.lettuce</groupId>-->
-                <!--</exclusion>-->
+            <!--<exclusion>-->
+            <!--<artifactId>lettuce-core</artifactId>-->
+            <!--<groupId>io.lettuce</groupId>-->
+            <!--</exclusion>-->
             <!--</exclusions>-->
         </dependency>
 
@@ -67,9 +80,9 @@
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>redis.clients</groupId>-->
-            <!--<artifactId>jedis</artifactId>-->
-            <!--<version>2.9.0</version>-->
+        <!--<groupId>redis.clients</groupId>-->
+        <!--<artifactId>jedis</artifactId>-->
+        <!--<version>2.9.0</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -95,12 +108,6 @@
             <groupId>com.github.penggle</groupId>
             <artifactId>kaptcha</artifactId>
             <version>2.3.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-email</artifactId>
-            <version>1.5</version>
         </dependency>
 
         <dependency>

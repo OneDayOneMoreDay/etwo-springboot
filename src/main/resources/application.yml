@@ -3,16 +3,19 @@ server:
   port: 8081
   servlet:
     context-path: /
-  ssl:  #关于https的配置
-#    key-store: classpath:javaboy.p12
-#    key-alias: tomcathttps
-#    enabled: true
-#    key-store-password: 123456
-    key-store: classpath:keystore.p12
-    key-alias: tomcat
-    enabled: true
-    key-store-password: 123456
-    key-store-type: PKCS12
+#  ssl:  #关于https的配置
+##    key-store: classpath:javaboy.p12
+##    key-alias: tomcathttps
+##    enabled: true
+##    key-store-password: 123456
+##    key-store: classpath:keystore.p12
+##    key-alias: tomcat
+##    enabled: true
+##    key-store-password: 123456
+##    key-store-type: PKCS12
+#    key-store: classpath:3966344_onemoreday.top.pfx
+#    key-store-password: W84n0Y0R
+#    key-store-type: PKCS12
 
   tomcat:
     uri-encoding: utf-8
@@ -52,6 +55,12 @@ spring:
     maxPoolPreparedStatementPerConnectionSize: 20
     useGlobalDataSourceStat: true
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+  mail:
+    username: dk476879110@163.com   #发送方邮箱
+    password: AXZGRAIJDHPBHFFL      #授权码
+    host: smtp.163.com              #邮箱服务器地址
+    default-encoding: UTF-8         #默认编码格式
 
   servlet:
     multipart:  #设置上传文件的大小

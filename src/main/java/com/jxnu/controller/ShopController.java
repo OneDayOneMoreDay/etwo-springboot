@@ -5,6 +5,7 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.jxnu.domain.Dish;
 import com.jxnu.domain.Shop;
 import com.jxnu.service.CustomerService;
+import com.jxnu.service.EmailService;
 import com.jxnu.service.ShopService;
 import com.jxnu.utils.*;
 import org.slf4j.Logger;
@@ -50,6 +51,8 @@ public class ShopController {
     private ShopService shopService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private EmailService emailService;
 
     @Value("${shopImgPath}")
     private String shopImgPath;
@@ -137,7 +140,7 @@ public class ShopController {
      * @param email
      * @return 根据是否发送注册验证码成功返回相应的json提示信息
      */
-    @RequestMapping(path = "/getEmailCode", params = "email")
+    @GetMapping(path = "/getEmailCode", params = "email")
     public Map<String, Object> getEmailCode(HttpServletRequest req, String email) {
 
         //用slf4J和log4J日志框架输出接收到的参数
@@ -156,12 +159,22 @@ public class ShopController {
 
         //2.发送注册邮箱验证码
         String emailCode = EmailCodeUtil.getCode();
-        boolean b = EmailCodeUtil.sendEmail(email, emailCode);
+        //旧方法发送邮件验证码
+        /*boolean b = EmailCodeUtil.sendEmail(email, emailCode);
         if (!b) {
             map.put("success", false);
             map.put("msg", "发送失败");
             return map;
+        }*/
+        //springboot整合发送发送邮件验证码
+        try {
+            emailService.sendEmailVerCode(email,emailCode);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("msg", "发送失败");
+            return map;
         }
+
 
         //3.发送成功
         //3.1将邮箱验证码放入session中
