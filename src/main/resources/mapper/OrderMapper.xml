@@ -59,4 +59,11 @@
         update orders set order_total_price = #{orderTotalPrice}
         where order_id = #{orderId}
     </update>
+
+    <!--获取某店铺所有还存在未结账订单的桌号-->
+    <select id="getOrderDishDesks" parameterType="Integer" resultType="Integer">
+        select desk_id
+        from orders
+        where order_status=0 and order_shop_id = #{shopId}
+    </select>
 </mapper>

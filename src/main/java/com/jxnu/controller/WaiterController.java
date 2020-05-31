@@ -3,6 +3,7 @@ package com.jxnu.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jxnu.domain.Shop;
 import com.jxnu.service.ItemService;
+import com.jxnu.service.OrderService;
 import com.jxnu.service.ShopService;
 import com.jxnu.utils.VerifyCodeUtil;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +32,8 @@ public class WaiterController {
 
     @Autowired
     private ShopService shopService;
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     private ItemService itemService;
@@ -99,6 +103,27 @@ public class WaiterController {
         //5.返回数据
         map.put("success", true);
         map.put("msg", "登录成功");
+        return map;
+    }
+
+    /**
+     * 获取当前店铺有哪些桌已经下单了菜（注意是下单，不是点菜）
+     */
+    @GetMapping(path = "/getOrderDishDesks")
+    public Map<String, Object> getOrderDishDesks(HttpSession session){
+
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        //1.从session中获取已经登录的shop对象
+        Shop shopFromSession = (Shop) session.getAttribute("shop");
+        logger.info("shopBySession = " + shopFromSession);
+
+        //2.调用service层方法
+        List<Integer> orderDishDesks = orderService.getOrderDishDesks(shopFromSession.getShopId());
+
+        //3.返回结果
+        map.put("success", true);
+        map.put("hadOrderDishDesks",orderDishDesks);
         return map;
     }
 

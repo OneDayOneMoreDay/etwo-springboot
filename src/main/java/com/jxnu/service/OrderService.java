@@ -34,4 +34,11 @@ public interface OrderService {
      * @return
      */
     Integer updateOrder(Integer orderId,Integer shopId);
+
+    /**
+     * 获取某店铺所有还存在未结账订单的桌号
+     * @param shopId
+     * @return
+     */
+    List<Integer> getOrderDishDesks(Integer shopId);
 }

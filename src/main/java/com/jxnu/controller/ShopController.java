@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +31,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @date 2020/4/13 14:14
@@ -53,6 +55,8 @@ public class ShopController {
     private CustomerService customerService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Value("${shopImgPath}")
     private String shopImgPath;
@@ -177,12 +181,16 @@ public class ShopController {
 
 
         //3.发送成功
-        //3.1将邮箱验证码放入session中
-        HttpSession session = req.getSession();
-//        logger.info("getEmailCodeSession = "+session);
+        //3.1将邮箱验证码放入redis缓存中
+        stringRedisTemplate.opsForValue().set("regCode:"+email,emailCode);
+        stringRedisTemplate.expire("regCode:"+email, 70, TimeUnit.SECONDS);
+
+        //3.1将邮箱验证码放入session缓存中
+        /*HttpSession session = req.getSession();
+        logger.info("getEmailCodeSession = "+session);
         session.setAttribute("emailCode", emailCode);
         session.setAttribute("email", email);
-        session.setMaxInactiveInterval(60);
+        session.setMaxInactiveInterval(60); //单位为秒*/
 
         map.put("success", true);
         map.put("msg", "发送成功，请注意查收");
@@ -239,7 +247,7 @@ public class ShopController {
 
         //2.判断注册邮箱验证码是否正确
         //2.1 从session获取真正的邮箱验证码值
-        HttpSession session = req.getSession();
+        /*HttpSession session = req.getSession();
         String realEmailCode = (String) session.getAttribute("emailCode");
         String realEmail = (String) session.getAttribute("email");
         session.removeAttribute("emailCode");
@@ -248,6 +256,15 @@ public class ShopController {
         logger.info("realEmailCode = " + realEmailCode);
         logger.info("realEmail = " + realEmail);
         if (!code.equals(realEmailCode) && !email.equals(realEmail)) {
+            map.put("success", false);
+            map.put("msg", "注册失败，邮箱验证码输入错误");
+            return map;
+        }*/
+        //2.1 从redis获取真正的邮箱验证码值
+        String realEmailCode = stringRedisTemplate.opsForValue().get("regCode:"+email);
+        stringRedisTemplate.delete("regCode:"+email);
+        logger.info("realEmailCode = " + realEmailCode);
+        if (!code.equals(realEmailCode)) {
             map.put("success", false);
             map.put("msg", "注册失败，邮箱验证码输入错误");
             return map;

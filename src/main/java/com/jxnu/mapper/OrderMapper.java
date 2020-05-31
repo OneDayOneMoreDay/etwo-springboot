@@ -41,4 +41,11 @@ public interface OrderMapper {
      * @return
      */
     Integer updateOrderTotalPrice(@Param("orderTotalPrice") Float orderTotalPrice,@Param("orderId") Integer orderId);
+
+    /**
+     * 获取某店铺所有还存在未结账订单的桌号
+     * @param shopId
+     * @return
+     */
+    List<Integer> getOrderDishDesks(Integer shopId);
 }

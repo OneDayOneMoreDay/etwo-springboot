@@ -167,4 +167,14 @@ public class OrderServiceImpl implements OrderService {
         //4.向数据库修改order
         return orderMapper.updateOrder(order);
     }
+
+    /**
+     * 获取某店铺所有还存在未结账订单的桌号
+     * @param shopId
+     * @return
+     */
+    @Override
+    public List<Integer> getOrderDishDesks(Integer shopId) {
+        return orderMapper.getOrderDishDesks(shopId);
+    }
 }
