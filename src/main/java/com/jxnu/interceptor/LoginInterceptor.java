@@ -52,7 +52,8 @@ public class LoginInterceptor implements HandlerInterceptor {
             }
         }
         if(!bool){
-            response.sendRedirect(request.getContextPath()+"/html?action=login");
+//            response.sendRedirect(request.getContextPath()+"/html?action=login");
+            response.getOutputStream().println("请先登录");
             return false;
         }
         return true;

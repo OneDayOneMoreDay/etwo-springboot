@@ -3,7 +3,7 @@ server:
   port: 8081
   servlet:
     context-path: /
-#  ssl:  #关于https的配置
+  ssl:  #关于https的配置
 ##    key-store: classpath:javaboy.p12
 ##    key-alias: tomcathttps
 ##    enabled: true
@@ -13,9 +13,9 @@ server:
 ##    enabled: true
 ##    key-store-password: 123456
 ##    key-store-type: PKCS12
-#    key-store: classpath:3966344_onemoreday.top.pfx
-#    key-store-password: W84n0Y0R
-#    key-store-type: PKCS12
+    key-store: classpath:4007237_eeat.onemoreday.top.pfx
+    key-store-password: VdPaGCM3
+    key-store-type: PKCS12
 
   tomcat:
     uri-encoding: utf-8
@@ -33,8 +33,8 @@ spring:
   datasource:
     #数据源基本配置
     username: root
-    password: root
-    url: jdbc:mysql://127.0.0.1:3306/etwo?characterEncoding=UTF-8&useSSL=false
+    password: 123456
+    url: jdbc:mysql://http://47.102.207.240:3306/etwo?characterEncoding=UTF-8&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 

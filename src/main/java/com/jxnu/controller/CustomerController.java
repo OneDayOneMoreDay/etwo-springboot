@@ -1,6 +1,7 @@
 package com.jxnu.controller;
 
 import com.jxnu.domain.*;
+import com.jxnu.dto.PreDish;
 import com.jxnu.service.CustomerService;
 import com.jxnu.service.DishService;
 import com.jxnu.service.OrderService;
@@ -312,12 +313,24 @@ public class CustomerController {
         }
         logger.info("dishMap=" + dishMap);
 
-        Map<Object, Integer> dishInfoMap = new HashMap<>();
+        /*Map<Object, Object> dishInfoMap = new HashMap<>();
         for (Map.Entry<Integer, Integer> entry : dishMap.entrySet()) {
-            dishInfoMap.put(dishService.findDishByDishId(entry.getKey()), entry.getValue());
-        }
-        map.put("preOrder", dishInfoMap);
+            //dishInfoMap.put(dishService.findDishByDishId(entry.getKey()), entry.getValue());
+            dishInfoMap.put(entry.getValue(),dishService.findDishByDishId(entry.getKey()));
 
+        }
+        logger.info("dishInfoMap=" + dishInfoMap);*/
+
+        List<PreDish> preOrder = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : dishMap.entrySet()) {
+            PreDish preDish = new PreDish();
+            preDish.setDish(dishService.findDishByDishId(entry.getKey()));
+            preDish.setDishNum(entry.getValue());
+            preOrder.add(preDish);
+        }
+        logger.info("preOrder=" + preOrder);
+
+        map.put("preOrder", preOrder);
         return map;
     }
 
