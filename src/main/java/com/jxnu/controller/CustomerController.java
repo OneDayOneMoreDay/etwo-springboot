@@ -281,7 +281,7 @@ public class CustomerController {
             map.put("success", true);
             map.put("order", orderList);
         } else {
-            //权宜之计，mybatis延迟加载导致返回json错误
+            //mybatis延迟加载导致返回json错误
             Order order1 = new Order();
             order1.setOrderId(orderList.get(0).getOrderId());
             order1.setOrderShopId(orderList.get(0).getOrderShopId());

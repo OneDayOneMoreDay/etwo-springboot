@@ -43,4 +43,10 @@
     <select id="findDishByDishId" resultMap="dishMap" parameterType="Integer">
         SELECT * FROM dish WHERE dish_id = #{dishId} and dish_status = 1
     </select>
+
+    <!--更新菜品数量-->
+    <update id="updateDishNumber" parameterType="Integer">
+        update dish set dish_number = dish_number + #{dishNumber}
+        where dish_id=#{dishId}
+    </update>
 </mapper>

@@ -4,6 +4,7 @@ import com.jxnu.domain.Dish;
 import com.jxnu.domain.Item;
 import com.jxnu.domain.Order;
 import com.jxnu.domain.Type;
+import com.jxnu.mapper.DishMapper;
 import com.jxnu.mapper.ItemMapper;
 import com.jxnu.mapper.OrderMapper;
 import com.jxnu.service.OrderService;
@@ -28,6 +29,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderMapper orderMapper;
     @Autowired
     private ItemMapper itemMapper;
+    @Autowired
+    private DishMapper dishMapper;
 
     /**
      * 插入一条订单
@@ -41,14 +44,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Integer insertOrder(Integer shopId, Integer deskId, Map<Integer, Integer> dishMap) {
 
-        //1 判断要插入的菜品是否都属于此店铺
+        //1 判断要插入的菜品是否都属于此店铺以及菜品剩余数量是否都大于顾客点的数量
         //1.1 获取此店铺的所有的菜品分类以及菜品
         List<Type> typeList = typeService.findTypeByShopId(shopId);
         //1.2 获取该订单中的菜品id构成的集合
         Set<Integer> dishIdSet = dishMap.keySet();
         int count = dishIdSet.size();
         float totalPrice=0;//该订单所有菜品的价格
-        //1.3 遍历typeList来判断要插入的菜品是否都属于此店铺
+        //1.3 遍历typeList来判断要插入的菜品是否都属于此店铺以及菜品剩余数量是否都大于顾客点的数量
         for (Type type : typeList) {
             for (Dish dish : type.getDishes()) {
                 //1.4 值为true代表要插入的菜品是这个店铺的，然后count减1
@@ -91,7 +94,7 @@ public class OrderServiceImpl implements OrderService {
             //模拟出错，看事务是否有效
             //int a = 1/0;
 
-            //5.插入订单明细
+            //5.插入订单明细和更新菜品数量
             Item item = new Item();
             for (Integer integer : dishIdSet) {
                 item.setItemOrderId(orderId);
@@ -99,6 +102,8 @@ public class OrderServiceImpl implements OrderService {
                 item.setItemNumber(dishMap.get(integer));
                 item.setItemWaitNumber(dishMap.get(integer));
                 itemMapper.insertItem(item);
+                dishMapper.updateDishNumber(-dishMap.get(integer),integer);
+
             }
         }else{
             //System.out.println(222222222);
@@ -114,6 +119,7 @@ public class OrderServiceImpl implements OrderService {
                             item1.getItemDishId(),
                             dishMap.get(item1.getItemDishId()),
                             dishMap.get(item1.getItemDishId()));
+                    dishMapper.updateDishNumber(-dishMap.get(item1.getItemDishId()),item1.getItemDishId());
                     dishIdSet.remove(item1.getItemDishId());
                 }
             }
@@ -125,6 +131,7 @@ public class OrderServiceImpl implements OrderService {
                 item.setItemNumber(dishMap.get(integer));
                 item.setItemWaitNumber(dishMap.get(integer));
                 itemMapper.insertItem(item);
+                dishMapper.updateDishNumber(-dishMap.get(integer),integer);
             }
         }
 

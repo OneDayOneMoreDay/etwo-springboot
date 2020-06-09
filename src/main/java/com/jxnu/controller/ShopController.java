@@ -64,6 +64,7 @@ public class ShopController {
 
     @Value("${shopImgPath}")
     private String shopImgPath;
+
     /**
      * 登录
      * 开放get方法测试
@@ -176,7 +177,7 @@ public class ShopController {
         }*/
         //springboot整合发送发送邮件验证码
         try {
-            emailService.sendEmailVerCode(email,emailCode);
+            emailService.sendEmailVerCode(email, emailCode);
         } catch (Exception e) {
             map.put("success", false);
             map.put("msg", "发送失败");
@@ -186,8 +187,8 @@ public class ShopController {
 
         //3.发送成功
         //3.1将邮箱验证码放入redis缓存中
-        stringRedisTemplate.opsForValue().set("regCode:"+email,emailCode);
-        stringRedisTemplate.expire("regCode:"+email, 70, TimeUnit.SECONDS);
+        stringRedisTemplate.opsForValue().set("regCode:" + email, emailCode);
+        stringRedisTemplate.expire("regCode:" + email, 70, TimeUnit.SECONDS);
 
         //3.1将邮箱验证码放入session缓存中
         /*HttpSession session = req.getSession();
@@ -198,6 +199,95 @@ public class ShopController {
 
         map.put("success", true);
         map.put("msg", "发送成功，请注意查收");
+        return map;
+    }
+
+    /**
+     * 获取忘记密码时重置密码的邮箱验证码
+     *
+     * @param req
+     * @param email 邮箱号
+     * @return
+     */
+    @GetMapping(path = "/getForgetPasswordEmailCode", params = "email")
+    public Map<String, Object> getForgetPasswordEmailCode(HttpServletRequest req, String email) {
+
+        //用slf4J和log4J日志框架输出接收到的参数
+        Logger logger = LoggerFactory.getLogger(ShopController.class);
+        logger.info("email = " + email);
+
+        Map<String, Object> map = new HashMap<>();
+
+        //0.判断邮箱是否已经注册
+        Shop shop = shopService.findShopByEmail(email);
+        if (shop == null) {
+            map.put("success", false);
+            map.put("msg", "该邮箱未注册");
+            return map;
+        }
+
+        //1.发送注册邮箱验证码
+        String emailCode = EmailCodeUtil.getCode();
+        try {
+            emailService.sendEmailVerCode(email, emailCode);
+        } catch (Exception e) {
+            map.put("success", false);
+            map.put("msg", "发送失败");
+            return map;
+        }
+
+        //2.发送成功
+        //2.1将邮箱验证码放入redis缓存中
+        stringRedisTemplate.opsForValue().set("forgetPasswordEmailCode:" + email, emailCode);
+        stringRedisTemplate.expire("forgetPasswordEmailCode:" + email, 70, TimeUnit.SECONDS);
+
+        map.put("success", true);
+        map.put("msg", "发送成功，请注意查收");
+        return map;
+    }
+
+    /**
+     * 重置密码
+     *
+     * @param req
+     * @param email                   邮箱号
+     * @param newPassword             新密码
+     * @param forgetPasswordEmailCode 邮件验证码
+     * @return
+     */
+    @PostMapping(path = "/resetPassword", params = {"email","newPassword","forgetPasswordEmailCode"})
+    public Map<String, Object> resetPassword(HttpServletRequest req, String email, String newPassword,
+                                             String forgetPasswordEmailCode) {
+        Logger logger = LoggerFactory.getLogger(ShopController.class);
+        logger.info("email = {}", email);
+        logger.info("newPassword = {}", newPassword);
+        logger.info("forgetPasswordEmailCode = {}", forgetPasswordEmailCode);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        //0.防止一些数据为""
+        if ("".equals(email) || "".equals(newPassword)) {
+            map.put("success", false);
+            map.put("msg", "请输入有效数据，请重新输入");
+            return map;
+        }
+
+        //1.判断注册邮箱验证码是否正确
+        //1.1 从redis获取真正的邮箱验证码值
+        String realEmailCode = stringRedisTemplate.opsForValue().get("forgetPasswordEmailCode:" + email);
+        stringRedisTemplate.delete("forgetPasswordEmailCode:" + email);
+        logger.info("realEmailCode = " + realEmailCode);
+        if (!forgetPasswordEmailCode.equals(realEmailCode)) {
+            map.put("success", false);
+            map.put("msg", "重置密码失败，邮箱验证码输入错误");
+            return map;
+        }
+
+        //2.调用service层方法
+        shopService.updateShopPassword(email, newPassword);
+
+        map.put("success", true);
+        map.put("msg", "重置密码成功");
         return map;
     }
 
@@ -265,8 +355,8 @@ public class ShopController {
             return map;
         }*/
         //2.1 从redis获取真正的邮箱验证码值
-        String realEmailCode = stringRedisTemplate.opsForValue().get("regCode:"+email);
-        stringRedisTemplate.delete("regCode:"+email);
+        String realEmailCode = stringRedisTemplate.opsForValue().get("regCode:" + email);
+        stringRedisTemplate.delete("regCode:" + email);
         logger.info("realEmailCode = " + realEmailCode);
         if (!code.equals(realEmailCode)) {
             map.put("success", false);
@@ -290,7 +380,7 @@ public class ShopController {
         //5.1获取图片存放的路径
         String basePath = "/shopImg/" + email.split("@")[0] + "/";
         //String imgPath = req.getSession().getServletContext().getRealPath(basePath);
-        String imgPath = shopImgPath+email.split("@")[0] + "/";
+        String imgPath = shopImgPath + email.split("@")[0] + "/";
         logger.info("imgPath=" + imgPath);
         File file = new File(imgPath);
         if (!file.exists()) {
@@ -331,6 +421,7 @@ public class ShopController {
 
     /**
      * 修改店铺信息(包含修改店铺图片)
+     *
      * @param req
      * @param shopName
      * @param shopAddress
@@ -339,7 +430,7 @@ public class ShopController {
      */
     @RequestMapping(path = "/update", params = {"shopName", "shopAddress"})
     public Map<String, Object> updateShop(HttpServletRequest req, String shopName,
-                                        String shopAddress, String shopNotice){
+                                          String shopAddress, String shopNotice) {
         Logger logger = LoggerFactory.getLogger(ShopController.class);
         logger.info("shopName = " + shopName);
         logger.info("shopAddress = " + shopAddress);
@@ -359,13 +450,13 @@ public class ShopController {
         logger.info("shopBySession = " + shopFromSession);
 
         //3.获取前端上传的文件
-        String imgPath,imgName;
+        String imgPath, imgName;
         imgPath = imgName = null;
         MultipartFile multipartFile = UploadImgUtil.getFile(req, map);
         if (multipartFile == null) {
             //multipartFile可以为null，为null代表没有修改菜品图片
             logger.info("修改店铺信息没有修改图片");
-        }else {
+        } else {
             logger.info("修改店铺信息修改图片");
             //4.对前端上传的图片的后缀名进行限定
             Boolean b = UploadImgUtil.suffix(multipartFile, map);
@@ -381,7 +472,7 @@ public class ShopController {
             //6.1获取图片存放的路径
             /*imgPath = req.getSession().getServletContext().getRealPath("/")+"shopImg\\"
                     +shopFromSession.getShopEmail().split("@")[0]+"\\";*/
-            imgPath = shopImgPath+shopFromSession.getShopEmail().split("@")[0]+"/";
+            imgPath = shopImgPath + shopFromSession.getShopEmail().split("@")[0] + "/";
             File file = new File(imgPath);
             if (!file.exists()) {
                 file.mkdirs();
@@ -401,15 +492,15 @@ public class ShopController {
                 return map;
             }
         }
-        logger.info("imgPath="+imgPath);
-        logger.info("imgName="+imgName);
+        logger.info("imgPath=" + imgPath);
+        logger.info("imgName=" + imgName);
 
         //7.将菜品信息保存到数据库
-        Integer i = shopService.updateShop(shopName,shopAddress,shopNotice, shopFromSession.getShopId());
+        Integer i = shopService.updateShop(shopName, shopAddress, shopNotice, shopFromSession.getShopId());
 
         //8.修改失败
-        if (i!= 1) {
-            if (multipartFile!=null){
+        if (i != 1) {
+            if (multipartFile != null) {
                 ImgUtil.deleteImage(imgPath, imgName);
             }
             map.put("success", false);
@@ -425,6 +516,7 @@ public class ShopController {
 
     /**
      * 修改店铺密码
+     *
      * @param req
      * @param password
      * @param confirmPassword
@@ -460,7 +552,7 @@ public class ShopController {
         Integer integer = shopService.updateShopPassword(shopFromSession.getShopId(), password);
 
         //5.修改失败
-        if (integer!=1){
+        if (integer != 1) {
             map.put("success", false);
             map.put("msg", "修改失败");
             return map;
@@ -531,12 +623,13 @@ public class ShopController {
 
     /**
      * 根据桌号生成二维码
+     *
      * @param resp
      * @param deskId 桌子编号
      * @return
      */
-    @RequestMapping(value = "/getQRCode",params = "deskId")
-    public Map<String, Object> getQRCode(HttpServletRequest req,HttpServletResponse resp,Integer deskId) {
+    @RequestMapping(value = "/getQRCode", params = "deskId")
+    public Map<String, Object> getQRCode(HttpServletRequest req, HttpServletResponse resp, Integer deskId) {
 
         Logger logger = LoggerFactory.getLogger(ShopController.class);
         logger.info("deskId = " + deskId);
@@ -548,23 +641,23 @@ public class ShopController {
         logger.info("shopBySession = " + shopFromSession);
 
         //2.生成http://localhost:8080//shopId=1000/deskId=1格式的url
-        String url = "http://localhost:8080"+req.getContextPath()+"/shopId="+
-                shopFromSession.getShopId()+"/deskId="+deskId;
+        String url = "http://localhost:8080" + req.getContextPath() + "/shopId=" +
+                shopFromSession.getShopId() + "/deskId=" + deskId;
         logger.info("url = " + url);
 
         //3.获取logo的真实路径
         //String logoPath = req.getServletContext().getRealPath("/public/logo/logo.png");
         ApplicationHome home = new ApplicationHome(getClass());
         File jarFile = home.getSource();
-        String logoPath = jarFile.getPath().replace("\\","/")+"/public/logo/logo.png";
+        String logoPath = jarFile.getPath().replace("\\", "/") + "/public/logo/logo.png";
 
-        logger.info("logoPath="+logoPath);
+        logger.info("logoPath=" + logoPath);
 
         try {
             //4.生成二维码
             BufferedImage bufferedImage = QRCodeUtils.encodeMy(url, logoPath, false);
             //5.通过输出流将二维码显示到前端
-            ImageIO.write(bufferedImage,"jpg",resp.getOutputStream());
+            ImageIO.write(bufferedImage, "jpg", resp.getOutputStream());
         } catch (Exception e) {
             e.printStackTrace();
             map.put("success", false);

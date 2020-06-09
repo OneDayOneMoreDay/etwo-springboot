@@ -111,4 +111,12 @@ public class ShopServiceImpl implements ShopService {
         shop.setShopPassword(shopPassword);
         return shopMapper.updateShopPassword(shop);
     }
+
+    @Override
+    public Integer updateShopPassword(String shopEmail, String shopPassword) {
+        Shop shop = new Shop();
+        shop.setShopEmail(shopEmail);
+        shop.setShopPassword(shopPassword);
+        return shopMapper.updateShopPassword(shop);
+    }
 }

@@ -56,6 +56,14 @@
 
     <!--修改店铺密码-->
     <update id="updateShopPassword" parameterType="shop">
-        update shop set shop_password = #{shopPassword} where shop_id = #{shopId}
+        update shop set shop_password = #{shopPassword}
+        <where>
+            <if test="shopId != null">
+                and shop_id = #{shopId}
+            </if>
+            <if test="shopEmail != null">
+                and shop_email = #{shopEmail}
+            </if>
+        </where>
     </update>
 </mapper>

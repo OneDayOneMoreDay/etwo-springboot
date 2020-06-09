@@ -2,6 +2,7 @@ package com.jxnu.mapper;
 
 import com.jxnu.domain.Dish;
 import com.jxnu.domain.Shop;
+import org.apache.ibatis.annotations.Param;
 import org.omg.PortableInterceptor.Interceptor;
 import org.springframework.stereotype.Repository;
 
@@ -48,4 +49,11 @@ public interface DishMapper {
      * @return
      */
     Dish findDishByDishId(Integer dishId);
+
+    /**
+     * 更新菜品数量
+     * @param dishNumber 菜品要增加或减少的数量
+     * @return
+     */
+    Integer updateDishNumber(@Param("dishNumber") Integer dishNumber,@Param("dishId") Integer dishId);
 }

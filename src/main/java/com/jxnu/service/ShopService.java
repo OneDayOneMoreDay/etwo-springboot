@@ -42,4 +42,6 @@ public interface ShopService {
     Integer updateShop(String shopName, String shopAddress, String shopNotice,Integer shopId);
 
     Integer updateShopPassword(Integer shopId,String shopPassword);
+
+    Integer updateShopPassword(String shopEmail,String shopPassword);
 }

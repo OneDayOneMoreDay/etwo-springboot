@@ -21,6 +21,11 @@ public class HtmlController {
         switch (action){
             case "login":
                return "login";
+            case "index":
+               return "index";
+            case "ll":
+               return "/html/ll.html";
+               //return "forward:/index.html";
         }
         return "login";
     }
