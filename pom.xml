@@ -91,6 +91,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!--springboot热部署工具-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

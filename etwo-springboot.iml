@@ -110,6 +110,7 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-jcl:5.1.15.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.springframework:spring-test:5.1.15.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.xmlunit:xmlunit-core:2.6.4" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-devtools:2.1.14.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.16.18" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:druid:1.1.8" level="project" />
     <orderEntry type="library" name="Maven: com.github.penggle:kaptcha:2.3.2" level="project" />

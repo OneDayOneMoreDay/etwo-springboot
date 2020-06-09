@@ -8,12 +8,15 @@ import com.jxnu.service.CustomerService;
 import com.jxnu.service.EmailService;
 import com.jxnu.service.ShopService;
 import com.jxnu.utils.*;
+import io.netty.util.internal.ResourcesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.system.ApplicationHome;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +30,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -414,7 +418,7 @@ public class ShopController {
         }
 
         //9.修改成功
-        map.put("success", false);
+        map.put("success", true);
         map.put("msg", "修改成功");
         return map;
     }
@@ -549,7 +553,13 @@ public class ShopController {
         logger.info("url = " + url);
 
         //3.获取logo的真实路径
-        String logoPath = req.getSession().getServletContext().getRealPath("/logo/logo.png");
+        //String logoPath = req.getServletContext().getRealPath("/public/logo/logo.png");
+        ApplicationHome home = new ApplicationHome(getClass());
+        File jarFile = home.getSource();
+        String logoPath = jarFile.getPath().replace("\\","/")+"/public/logo/logo.png";
+
+        logger.info("logoPath="+logoPath);
+
         try {
             //4.生成二维码
             BufferedImage bufferedImage = QRCodeUtils.encodeMy(url, logoPath, false);
