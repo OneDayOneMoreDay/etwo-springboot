@@ -1,0 +1,75 @@
+.box1{
+  margin-left: 10px;
+  float: left;
+}
+
+/*#bg{*/
+/*  width:800px;*/
+/*  height:700px;*/
+/*  border: 8px solid #9E9A9A;*/
+/*  background: #000000;*/
+/*  border-radius: 48%;*/
+/*  margin: auto;*/
+/*}*/
+.bg1{
+  width: 500px;
+  height: 100%;
+  background: #FFFFFF;
+  /*margin-top: 50px;*/
+  /*margin-left: 150px;*/
+  /*margin-right: 10px;*/
+  /*margin-bottom: 10px;*/
+  /*border-radius: 10%;*/
+  border: black solid 5px;
+}
+.img{
+  margin: auto;
+  width: 200px;
+  height: 200px;
+}
+/*.img2{*/
+/*  margin: auto;*/
+/*  width: 174px;*/
+/*  height: 34px;*/
+/*}*/
+.bg2{
+  background: #565656;
+  height: 70px;
+  margin-top: 30px;
+  position: relative;
+}
+.img3{
+  background: url(../img/yinfu.png);
+  width: 15px;
+  height: 16px;
+  margin-left:130px;
+  position: absolute;
+  margin-top: 30px;
+}
+.wenzi{
+  font-size: 15px;
+  color: #C7C7C7;
+  position: absolute;
+  margin-top: 25px;
+  margin-left: 170px;
+}
+.bg3{
+  background: #565656;
+  height: 70px;
+  margin-top: 3px;
+  position: relative;
+}
+.bg4{
+  background: #565656;
+  height: 70px;
+  margin-top: 3px;
+  position: relative;
+  /*border-bottom-left-radius: 30%;*/
+  /*border-bottom-right-radius:30%;*/
+}
+.bg5{
+  background: #565656;
+  height: 70px;
+  margin-top: 3px;
+  position: relative;
+}

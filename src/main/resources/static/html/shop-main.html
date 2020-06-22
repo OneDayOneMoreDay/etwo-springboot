@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>后台主页</title>
+    <link rel="icon" type="image/x-icon" href="edc.ico" />
+    <link rel="stylesheet" href="../css/layui.css" type="text/css">
+    <link rel="stylesheet" href="http://at.alicdn.com/t/font_1513805_bk0zywr35ml.css">
+    <link rel="stylesheet" href="../css/main.css" type="text/css">
+</head>
+<body>
+<div id="body">
+    <!-- 欢迎部分 -->
+    <div class="layui-fluid margintop15">
+        <div class="welcome">
+            <blockquote class="layui-elem-quote">
+                <span id="username"></span>当前时间为： <span>20:50:53</span>
+            </blockquote>
+        </div>
+    </div>
+    <div class="layui-fluid margintop15">
+        <div class="layui-card">
+            <div class="layui-card-header">系统信息</div>
+            <div class="layui-card-body">
+                <table class="layui-table tables">
+                    <colgroup>
+                        <col width="30%">
+                        <col width="">
+                        <col>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>软件版本</td>
+                        <td>1.0.180420</td>
+                    </tr>
+                    <tr>
+                        <td>上次更新时间</td>
+                        <td>2019.11.11</td>
+                    </tr>
+                    <tr>
+                        <td>服务器地址</td>
+                        <td>219.229.250.44:80</td>
+                    </tr>
+                    <tr>
+                        <td>运行环境</td>
+                        <td>Apache/2.4.23 (Win32) OpenSSL/1.0.2j mod_fcgid/2.3.9</td>
+                    </tr>
+                    <tr>
+                        <td>软件版本</td>
+                        <td>1.0.180420</td>
+                    </tr>
+                    <tr>
+                        <td>上次更新时间</td>
+                        <td>2019.11.11</td>
+                    </tr>
+                    <tr>
+                        <td>服务器地址</td>
+                        <td>219.229.250.44:80</td>
+                    </tr>
+                    <tr>
+                        <td>运行环境</td>
+                        <td>Apache/2.4.23 (Win32) OpenSSL/1.0.2j mod_fcgid/2.3.9</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 开发团队 -->
+    <div class="layui-fluid margintop15">
+        <div class="layui-card">
+            <div class="layui-card-header">开发团队</div>
+            <div class="layui-card-body">
+                <table class="layui-table tables">
+                    <colgroup>
+                        <col width="40%">
+                        <col width="">
+                        <col>
+                    </colgroup>
+                    <tbody>
+                    <tr>
+                        <td>版权所有</td>
+                        <td>不胜人间一场醉</td>
+                    </tr>
+                    <tr>
+                        <td>开发团队</td>
+                        <td>不胜人间一场醉</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../../js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="../../layui/layui.all.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //自动更新时间
+        getDate();
+        function getDate(){
+            var now = new Date();
+            var nowStr = now.getFullYear()
+                + "-" + (now.getMonth() + 1) + "-" + now.getDate()
+                + " " + now.getHours() + ":" + now.getMinutes()
+                + ":" + now.getSeconds();
+            span = $(".welcome span").eq(1).html(nowStr);
+            setTimeout(getDate, 1000);
+        }
+
+    })
+    layui.use('element', function () {
+        var element = layui.element;
+
+    });
+</script>
+</body>
+</html>

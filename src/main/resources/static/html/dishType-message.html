@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>菜品类信息</title>
+    <link rel="stylesheet"  href="../css/common/dishtable.css">
+    <script src="../js/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../js/common/http.js"></script>
+    <script src="../js/yidiancan/dishType-message.js"></script>
+    <script src="../js/yidiancan/dishType-add.js"></script>
+    <script src="../js/yidiancan/dishType-delete.js"></script>
+    <script src="../js/yidiancan/dishType-update.js"></script>
+</head>
+<style type="text/css">
+    .box{
+        /*position: relative;*/
+        width:50%; margin-top:100%; margin:auto; padding:28px;
+        height:350px; border:1px #111 solid;
+        display:none;
+
+    }
+    .box.show{display:block;}
+    .box .x{ font-size:18px; text-align:right; display:block;}
+    .box input{width:80%; font-size:18px; margin-top:18px;}
+    table
+    {
+        border-collapse: collapse;
+        margin: 0 auto;
+        text-align: center;
+    }
+    table td, table th
+    {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 50px;
+        width: 150px;
+    }
+    table thead th
+    {
+        background-color: #CCE8EB;
+        width: 100px;
+    }
+    table tr:nth-child(odd)
+    {
+        background: #fff;
+    }
+    table tr:nth-child(even)
+    {
+        background: #F5FAFA;
+    }
+</style>
+<body>
+<div style="text-align: center">
+    增加的菜品类：
+    <input id="typeName" name="typeName" type="text" placeholder="请输入要增加的菜品类的名字！">
+    <button class="addButton" value="添加菜品类" style="background-color:#CCE8EB; border-radius: 5px;-webkit-border-radius: 5px;-moz-border-border-radius: 5px;border: none; padding: 10px 25px 10px 25px;color: black;text-shadow: 1px 1px 1px #949494;">添加菜品类</button>
+</div>
+<table id="dishtype">
+    <tr>
+        <td>菜品类ID</td>
+        <!--        <td>店铺ID</td>-->
+        <td>菜品类名字</td>
+        <td>删除操作</td>
+        <td>修改操作</td>
+    </tr>
+</table>
+<!-- 引入bootstrap模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    修改菜品类
+                </h4>
+            </div>
+            <div class="modal-body">
+                    <span> 输入想修改的菜品类名字:</span>
+                    <input id="typeName1" type="text" name="typeName"  placeholder="请输入要修改菜品类名字"/><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="updateButton" class="btn btn-primary updateButton">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</body>
+</html>
+<script type="application/javascript">
+
+</script>

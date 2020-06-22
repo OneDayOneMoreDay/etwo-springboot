@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>用户注册</title>
+    <link rel="stylesheet" href="../css/form.css">
+    <script src="../js/jquery-3.4.1.min.js"></script>
+    <script src="../js/common/http.js"></script>
+    <script src="../js/yidiancan/register.js"></script>
+</head>
+<body>
+<div class="wrap">
+    <main class="form">
+        <h3>用户注册</h3>
+        <p>欢迎您注册，注册过程将不会收取您任何费用。我们承诺保护您的信息安全,不会将它提供给任何第三方。</p>
+        <p>注：<span class="red">*</span> 为必填内容</p>
+        <form id="addForm"  name="addForm" action="" method="post" enctype="multipart/form-data">
+            <fieldset>
+                <legend>账号信息</legend>
+                邮&nbsp;&nbsp;箱<span class="red">*</span>:
+                <input type="email" id="email" name="email" class="right" required placeholder="例如：1075043121@qq.com">
+                <button class="button"  type="button" name="" value="发送验证码">获取验证码</button><br><br>
+                邮箱验证码<span class="red">*</span>：
+                <input type="text" id="code" name="code" class="right" required ><br><br>
+
+                密&nbsp;&nbsp;码<span class="red">*</span>:
+                <input  type="password" id="password" name="password" class="right" required><br><br>
+
+                确认密码<span class="red">*</span>:
+                <input type="password" id="confirmPassword" name="confirmPassword" class="right" required ><br><br>
+
+            </fieldset>
+            <fieldset>
+                <legend>店铺信息</legend>
+                店铺名字<span class="red">*</span>:
+                <input type="text" id="shopName" name="shopName" class="right" ><br><br>
+
+                店铺地址<span class="red">*</span>:
+                <input type="text" id="shopAddress" name="shopAddress" style="width: 300px;height: 50px" class="right"><br><br>
+                店铺公告:
+                <input type="text" id="shopNotice" name="shopNotice" min="10" style="width: 300px;height: 50px" class="right"><br><br>
+                店铺图片：<span class="red">*</span>
+                <input type="file" id="shopImg" name="shopImg"/></br>
+
+            </fieldset>
+            <div class="box1">
+                <input type="reset" class="btn" value="重 填">
+                <button id="submit"  class="btn" type="button" name="" value="注册">注册</button><br><br>
+                <a class="btn" href="login.html">我已有账户，立即登录</a>
+            </div>
+        </form>
+    </main>
+</div>
+<!--            <footer class="page-footer">@2019 &copy;所有解释权归本公司所有</footer>-->
+<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.form/4.2.1/jquery.form.min.js"
+        integrity="sha384-tIwI8+qJdZBtYYCKwRkjxBGQVZS3gGozr3CtI+5JF/oL1JmPEHzCEnIKbDbLTCer"
+        crossorigin="anonymous"></script>
+<script type="application/javascript">
+    $("#submit").on("click", function(){
+        var registerUrl=http+'/shop/reg';
+        document.addForm.action=registerUrl;
+        $("#addForm").ajaxSubmit({
+            xhrFields: { withCredentials: true },
+            crossDomain: true,
+            success : function(data){
+                alert(data.msg)
+                alert(data.success)
+
+            },
+            error : function(){
+                alert("请求错误");
+            }
+        });
+    });
+</script>
+</body>
+</html>
+

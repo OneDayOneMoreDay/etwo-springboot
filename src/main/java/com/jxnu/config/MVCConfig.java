@@ -1,6 +1,7 @@
 package com.jxnu.config;
 
 import com.jxnu.interceptor.LoginInterceptor;
+import com.jxnu.interceptor.ShowInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,13 +19,17 @@ public class MVCConfig implements WebMvcConfigurer {
     private String shopImgPath;
     @Value("${dishImgPath}")
     private String dishImgPath;
+
     /**
      * 对静态资源的处理
      * @param registry
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/index").setViewName("index");
+        // 请求/html/index就会转发到classpath:/static/html/index.html
+        registry.addViewController("/html/index").setViewName("index");
+        registry.addViewController("/html/login").setViewName("login");
+        registry.addViewController("/html/register").setViewName("register");
     }
 
     /**
@@ -33,24 +38,36 @@ public class MVCConfig implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //super.addInterceptors(registry);
-        //静态资源；  *.css , *.js
-        //SpringBoot已经做好了静态资源映射
+
+        registry.addInterceptor(new ShowInterceptor()).addPathPatterns("/**");
+
+        //SpringMVC下，拦截器的注册需要排除对静态资源的拦截(*.css,*.js)
+        //SpringBoot已经做好了静态资源的映射，因此我们无需任何操作
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/",
+                        "/index",
+                        "/index.html",
+                        "/**/404.html",
+                        "/**/ForgetPassword.html",
                         "/**/*.jpg",
-                        "/**/*.html",
-                        "/**.html",
-                        "/html/**",
+                        "/**/*.png",
+                        "/**/*.gif",
                         "/**/*.css",
                         "/**/*.js",
                         "/**/*.ico",
                         "/**/*.txt",
+                        "/layui/**",
+
+                        "/html/index",
+                        "/html/login",
+                        "/html/register",
                         "/error/**",
+                        "/cus/**",
+                        "/mnp/**",
+                        "/test**",
                         "/Kaptcha",
-                        "static/**",
                         "/waiter/login",
                         "/shop/login",
                         "/shop/reg",
@@ -58,17 +75,14 @@ public class MVCConfig implements WebMvcConfigurer {
                         "/shop/getEmailCode",
                         "/shop/getForgetPasswordEmailCode",
                         "/shop/resetPassword",
-                        "/cus/**",
-                        "/mnp/**",
-                        "/shop/getEmailCode",
-                        "/test**"
+                        "/shop/getEmailCode"
                 );
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        /*registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-        registry.addResourceHandler("/public/**").addResourceLocations("classpath:/public/");*/
+        //registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
+        /*registry.addResourceHandler("/public/**").addResourceLocations("classpath:/public/");*/
         registry.addResourceHandler("/shopImg/**").addResourceLocations("file:"+shopImgPath);
         registry.addResourceHandler("/dishImg/**").addResourceLocations("file:"+dishImgPath);
     }
@@ -78,8 +92,7 @@ public class MVCConfig implements WebMvcConfigurer {
      * @return
      */
     @Bean
-    public WebMvcConfigurer corsConfigurer()
-    {
+    public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {

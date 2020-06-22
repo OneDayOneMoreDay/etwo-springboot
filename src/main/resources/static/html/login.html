@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="../css/login.css">
+    <script src="../js/jquery-3.4.1.min.js"></script>
+    <script src="../js/common/http.js"></script>
+    <script src="../js/yidiancan/login.js"></script>
+</head>
+<body id="body">
+      <div class="loginBox">
+        <img src="../img/user.jpg" class="user">
+          <h2>欢迎您的到来！</h2>
+       <div id="p" class="hint"></div>
+        <form>
+          <p>邮箱</p>
+          <input type="text"  id="email" name="email" placeholder="1075043121@qq.com">
+          <p>密码</p>
+          <input type="password"  id="password" name="password" placeholder="*******">
+<!--          <input  onclick="Login()" type="submit" name="" value="登录">-->
+            <!--          <div class="box1">-->
+            <!--            我&nbsp;&nbsp;是：&nbsp;-->
+            <!--          </div>-->
+            <p>验证码：
+                <input type="text" name="code"  id="code"/>
+                <img id="codePic" src="../img/code.jpg" onclick="getPic()" style="vertical-align:middle;cursor:pointer;width: 150px;height: 50px;"/>点击图片刷新
+            </p><br>
+            <p>是否记住密码：
+            <select name="remember" id="remember" class="right">
+                <option value="true">记住密码</option>
+                <option value="false">不记住密码</option>
+            </select></p><br>
+          <button id="button" onclick="Login()" type="button" name="" value="登录">登录</button>
+          <div class="forget">
+            <a href="ForgetPassword.html">忘记密码</a>
+            <a href="register.html">注册</a>
+          </div>
+        </form>
+<!--        <footer class="page-footer">@2019 &copy;所有解释权归本公司所有</footer>-->
+      </div>
+
+</body>
+</html>

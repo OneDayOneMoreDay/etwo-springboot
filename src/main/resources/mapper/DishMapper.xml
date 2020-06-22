@@ -30,7 +30,7 @@
 
     <!--根据菜品id来删除菜品-->
     <update id="deleteDish" parameterType="Integer">
-        delete from dish where dish_id = #{dishId}
+        update dish set dish_status = 0 where dish_id = #{dishId}
     </update>
 
     <!--修改一个菜品-->

@@ -19,11 +19,11 @@ import java.net.URLDecoder;
  */
 public class LoginInterceptor implements HandlerInterceptor {
 
-    private static final Logger logger = LoggerFactory.getLogger(HandlerInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        logger.info("LoginInterceptor拦截器拦截了{}",request.getRequestURI());
+        logger.info("{}经过了LoginInterceptor拦截器",request.getRequestURI());
 
         boolean bool = false;
         //1.判断session是否存在shop对象（即判断是否已经登录了）
@@ -58,6 +58,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         if(!bool){
 //            response.sendRedirect(request.getContextPath()+"/html?action=login");
+            logger.info("LoginInterceptor拦截器拦截了{}",request.getRequestURI());
             response.getWriter().write("please login");
             return false;
         }

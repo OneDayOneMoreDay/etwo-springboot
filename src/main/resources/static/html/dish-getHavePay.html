@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>已完成的订单信息</title>
+    <script src="../js/jquery-3.4.1.min.js"></script>
+    <script src="../js/common/http.js"></script>
+    <script src="../js/yidiancan/dish-getHavePay.js"></script>
+</head>
+<style type="text/css">
+    table
+    {
+        border-collapse: collapse;
+        text-align: center;
+    }
+    table td, table tr
+    {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+        width: 150px;
+    }
+</style>
+<body>
+<div style="text-align: center;color: black;font-size: 20px;">本店已完成订单信息</div>
+    <table class="getHavePay" style="margin: auto;">
+        <tr>
+            <td>订单编号</td>
+            <td>下单时间</td>
+            <td>结账时间</td>
+            <td>桌号</td>
+            <td>一共消费（/元）</td>
+        </tr>
+    </table>
+</body>
+</html>

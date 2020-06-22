@@ -4,7 +4,53 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<style>
+    body{
+        background-color: #222222;
+    }
+    h1{
+        text-align: center;
+        color: white;
+        margin: 50px;
+    }
+    #app{
+        text-align: center;
+        display: flex;
+        flex-flow: row;
+    }
+    #app > #one{
+        color: white;
+        text-align: center;
+        flex: 4;
+    }
+    #app > #two{
+        color: white;
+        text-align: center;
+        flex: 4;
+    }
+    #app > #three{
+        padding-top: 150px;
+        text-align: center;
+        flex: 3;
+    }
+    #app > #three > a{
+        color: #007DDB;
+    }
+</style>
 <body>
-    index1
+<h1>易点餐————拉面店导航</h1>
+<div id="app">
+        <div id="one">
+            <img src="desk01.png">
+            <p>拉面店——顾客微信扫码点餐</p>
+        </div>
+        <div id="two">
+            <img src="desk01.png">
+            <p>拉面店——服务员微信扫码</p>
+        </div>
+        <div id="three">
+            <a href="/html/login">拉面店——店主登录</a>
+        </div>
+    </div>
 </body>
 </html>

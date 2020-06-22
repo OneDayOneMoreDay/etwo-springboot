@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>根据ID搜索菜品类</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="../js/jquery-3.4.1.min.js"></script>
+    <script src="../js/yidiancan/dishType-search.js"></script>
+    <script src="../js/common/http.js"></script>
+</head>
+<style type="text/css">
+    table
+    {
+        border-collapse: collapse;
+        margin: 0 auto;
+        text-align: center;
+    }
+    table td, table tr
+    {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+        width: 150px;
+    }
+    table thead tr
+    {
+        background-color: #CCE8EB;
+        width: 200px;
+    }
+    table tr:nth-child(odd)
+    {
+        background: #fff;
+    }
+    table tr:nth-child(even)
+    {
+        background: #F5FAFA;
+    }
+</style>
+<body>
+<div style="text-align: center">
+    搜索：
+    <input id="dishTypeId" name="dishTypeId" type="text">
+    <input type="button" class="submit" value="搜索">
+</div>
+<table id="dishtype">
+    <tr>
+<!--        <td>菜品ID</td>-->
+        <td>菜品分类ID</td>
+        <td>菜品类名字</td>
+        <td>菜品价格</td>
+        <td>菜品数量</td>
+    </tr>
+</table>
+</body>
+</html>

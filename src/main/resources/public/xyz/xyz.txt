@@ -1,0 +1,1 @@
+classpath:/public/xyz/xyz.txt

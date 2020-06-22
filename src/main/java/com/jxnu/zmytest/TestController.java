@@ -202,4 +202,9 @@ public class TestController {
         outputStream.close();
         return "test14";
     }
+
+    @RequestMapping(path = "/test15")
+    public String test15() {
+        return "a";
+    }
 }

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>增加菜品</title>
+    <script src="../js/jquery-3.4.1.min.js"></script>
+    <script src="../js/common/http.js"></script>
+    <link rel="stylesheet"  href="../css/common/dishtable.css">
+</head>
+<body>
+<!--<h1>请填写增加菜品信息！</h1>-->
+<form class="smart-green" id="addForm" name="addForm" action="" method="POST" enctype="multipart/form-data">
+    <h1>请填写增加菜品信息！</h1>
+        <label>
+            <span> 增加菜品类ID:</span>
+            <input id="dishTypeId" type="text" name="dishTypeId"  placeholder="请输入增加菜品类ID"/>
+        </label>
+
+        <label>
+            <span>菜品名字 :</span>
+            <input id="dishName" type="text" value="" name="dishName" placeholder="请输入菜品名字"/>
+        </label>
+
+        <label>
+            <span>菜品价格 :</span>
+            <input id="dishPrice" type="text" name="dishPrice" placeholder="请输入菜品价格"/>
+        </label>
+        <label>
+            <span>菜品数量 :</span>
+            <input id="dishNumber" type="text" value="" name="dishNumber" placeholder="请输入菜品数量"/>
+        </label>
+
+        <label>
+        <span>上传菜品图片 :</span>
+        <input type="file" id="dishImg" name="dishImg"/></br>
+        </label>
+        <label>
+        <button id="submit2" type="button" style="background-color: #9DC45F;border-radius: 5px;-webkit-border-radius: 5px;-moz-border-border-radius: 5px;border: none;padding: 10px 25px 10px 25px;color: #FFF;text-shadow: 1px 1px 1px #949494;">上传菜品</button>
+        </label>
+</form>
+</body>
+</html>
+<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.form/4.2.1/jquery.form.min.js"
+        integrity="sha384-tIwI8+qJdZBtYYCKwRkjxBGQVZS3gGozr3CtI+5JF/oL1JmPEHzCEnIKbDbLTCer"
+        crossorigin="anonymous"></script>
+<script type="application/javascript">
+    $("#submit2").on("click", function(){
+        var dishAddUrl=http+'/dish/add';
+        document.addForm.action=dishAddUrl;
+        $("#addForm").ajaxSubmit({
+            xhrFields: { withCredentials: true },
+            crossDomain: true,
+            success : function(data){
+                alert(data.msg);
+                alert(data.success);
+                window.location.reload();
+            },
+            error : function(){
+                alert("请求错误");
+            }
+        });
+    });
+</script>

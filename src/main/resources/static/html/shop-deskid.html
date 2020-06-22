@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>打印桌号二维码</title>
+    <script src="../js/jquery-3.4.1.min.js"></script>
+    <script src="../js/common/http.js"></script>
+</head>
+<body>
+<div style="text-align: center">
+    请输入要打印桌号的总数：
+    <input id="deskId1" name="deskId1" type="text">
+    <input type="button" class="deskButton" value="打印">
+</div>
+<div class="desk">
+    <div style="float: left"  >
+<!--        <div style="color: red;">1号桌二维码</div>-->
+<!--        <img src="http://localhost:8081/shop/getQRCode?deskId="+i style="width: 300px;height: 300px;">-->
+    </div>
+</div>
+
+</body>
+</html>
+<script type="application/javascript">
+    $('.deskButton').click(function () {
+        var deskId1 = $('#deskId1').val();
+        alert(deskId1);
+        $('.desk').html('');//清空信息
+        var html='';
+        for(var deskId=1;deskId<=deskId1;deskId++){
+            html+="<div style=\"float: left\">\n" +
+                "    <div style=\"color: red;\">"+deskId+"号桌二维码</div>\n" +
+                "    <img src='/shop/getQRCode?deskId="+deskId+"' style=\"width: 300px;height: 300px;\">\n" +
+                "</div>";
+        }
+        $('.desk').append(html);
+    });
+</script>

@@ -1,36 +1,29 @@
 package com.jxnu.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.code.kaptcha.impl.DefaultKaptcha;
-import com.jxnu.domain.Dish;
 import com.jxnu.domain.Shop;
 import com.jxnu.service.CustomerService;
 import com.jxnu.service.EmailService;
 import com.jxnu.service.ShopService;
 import com.jxnu.utils.*;
-import io.netty.util.internal.ResourcesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.system.ApplicationHome;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,6 +57,12 @@ public class ShopController {
 
     @Value("${shopImgPath}")
     private String shopImgPath;
+
+    @Value("${QRC.prefix}")
+    private String QRCPrefix;
+
+    @Value("${QRC.suffix}")
+    private String QRCSuffix;
 
     /**
      * 登录
@@ -129,6 +128,11 @@ public class ShopController {
             cookie.setPath("/");
             //3.4设置cookie有效期为12小时
             cookie.setMaxAge(60 * 60 * 12);
+            resp.addCookie(cookie);
+        }else{
+            // 删除原来可能已有的cookie
+            Cookie cookie = new Cookie("shop", "");
+            cookie.setPath("/");
             resp.addCookie(cookie);
         }
 
@@ -640,9 +644,9 @@ public class ShopController {
         Shop shopFromSession = (Shop) req.getSession().getAttribute("shop");
         logger.info("shopBySession = " + shopFromSession);
 
-        //2.生成http://localhost:8080//shopId=1000/deskId=1格式的url
-        String url = "http://localhost:8080" + req.getContextPath() + "/shopId=" +
-                shopFromSession.getShopId() + "/deskId=" + deskId;
+        //2.生成https://open.weixin.qq.com/sns/getexpappinfo?appid=wx3e78be1650ba47cc&path=pages/start/start.html?shopId=1000&deskId=5#wechat-redirect格式的url
+        String url = QRCPrefix + "shopId=" +
+                shopFromSession.getShopId() + "&deskId=" + deskId + QRCSuffix;
         logger.info("url = " + url);
 
         //3.获取logo的真实路径
@@ -651,6 +655,7 @@ public class ShopController {
         File jarFile = home.getSource();
         String logoPath = jarFile.getPath().replace("\\", "/") + "/public/logo/logo.png";
 
+        //InputStream in = getClass().getClassLoader().getResourceAsStream("/public/logo/logo.png");
         logger.info("logoPath=" + logoPath);
 
         try {
